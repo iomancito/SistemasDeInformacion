@@ -27,12 +27,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`registered_user` (
   `u_id` INT UNSIGNED NOT NULL,
-  `login` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `login` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
   `dob` DATE NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `surname` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `surname` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`u_id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
   CONSTRAINT `user-registered_user`
@@ -66,10 +66,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`product` (
   `p_id` INT UNSIGNED NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
   `price` FLOAT(9,2) NOT NULL,
-  `picture` VARCHAR(45) NULL,
+  `picture` VARCHAR(2000) NULL,
   PRIMARY KEY (`p_id`))
 ENGINE = InnoDB;
 
@@ -145,9 +145,9 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `SisInf`.`feature` (
   `f_id` SMALLINT UNSIGNED NOT NULL,
   `p_id` INT UNSIGNED NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
-  `picture` VARCHAR(45) NULL,
+  `picture` VARCHAR(2000) NULL,
   PRIMARY KEY (`f_id`, `p_id`),
   INDEX `p_id_idx` (`p_id` ASC),
   CONSTRAINT `Has`
