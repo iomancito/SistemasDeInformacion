@@ -8,24 +8,24 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema si_p2
+-- Schema SisInf
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `si_p2` DEFAULT CHARACTER SET utf8 ;
-USE `si_p2` ;
+CREATE SCHEMA IF NOT EXISTS `SisInf` DEFAULT CHARACTER SET utf8 ;
+USE `SisInf` ;
 
 -- -----------------------------------------------------
--- Table `si_p2`.`user`
+-- Table `SisInf`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`user` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`user` (
   `u_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`u_id`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `si_p2`.`registered_user`
+-- Table `SisInf`.`registered_user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`registered_user` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`registered_user` (
   `u_id` INT UNSIGNED NOT NULL,
   `login` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -37,16 +37,16 @@ CREATE TABLE IF NOT EXISTS `si_p2`.`registered_user` (
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
   CONSTRAINT `user-registered_user`
     FOREIGN KEY (`u_id`)
-    REFERENCES `si_p2`.`user` (`u_id`)
+    REFERENCES `SisInf`.`user` (`u_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `si_p2`.`user_activity`
+-- Table `SisInf`.`user_activity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`user_activity` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`user_activity` (
   `ua_id` INT UNSIGNED NOT NULL,
   `u_id` INT UNSIGNED NOT NULL,
   `date` DATETIME NOT NULL DEFAULT NOW(),
@@ -55,16 +55,16 @@ CREATE TABLE IF NOT EXISTS `si_p2`.`user_activity` (
   INDEX `u_id_idx` (`u_id` ASC),
   CONSTRAINT `logs`
     FOREIGN KEY (`u_id`)
-    REFERENCES `si_p2`.`registered_user` (`u_id`)
+    REFERENCES `SisInf`.`registered_user` (`u_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `si_p2`.`product`
+-- Table `SisInf`.`product`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`product` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`product` (
   `p_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `description` TEXT NULL,
@@ -75,9 +75,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `si_p2`.`product_activity`
+-- Table `SisInf`.`product_activity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`product_activity` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`product_activity` (
   `pa_id` INT UNSIGNED NOT NULL,
   `p_id` INT UNSIGNED NOT NULL,
   `u_id` INT UNSIGNED NOT NULL,
@@ -87,42 +87,42 @@ CREATE TABLE IF NOT EXISTS `si_p2`.`product_activity` (
   INDEX `u_id_idx` (`u_id` ASC),
   CONSTRAINT `AffectedBy`
     FOREIGN KEY (`p_id`)
-    REFERENCES `si_p2`.`product` (`p_id`)
+    REFERENCES `SisInf`.`product` (`p_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `Does`
     FOREIGN KEY (`u_id`)
-    REFERENCES `si_p2`.`user` (`u_id`)
+    REFERENCES `SisInf`.`user` (`u_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `si_p2`.`rating`
+-- Table `SisInf`.`rating`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`rating` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`rating` (
   `pa_id` INT UNSIGNED NOT NULL,
   `rating` ENUM('1', '2', '3', '4', '5') NOT NULL DEFAULT '3',
   `comment` TEXT NULL,
   PRIMARY KEY (`pa_id`),
   CONSTRAINT `product_activity-rating`
     FOREIGN KEY (`pa_id`)
-    REFERENCES `si_p2`.`product_activity` (`pa_id`)
+    REFERENCES `SisInf`.`product_activity` (`pa_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `si_p2`.`purchase`
+-- Table `SisInf`.`purchase`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`purchase` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`purchase` (
   `pa_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`pa_id`),
   CONSTRAINT `product_activity-purchase`
     FOREIGN KEY (`pa_id`)
-    REFERENCES `si_p2`.`product_activity` (`pa_id`)
+    REFERENCES `SisInf`.`product_activity` (`pa_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -140,9 +140,9 @@ ENGINE = InnoDB;
  */
 
 -- -----------------------------------------------------
--- Table `si_p2`.`feature`
+-- Table `SisInf`.`feature`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `si_p2`.`feature` (
+CREATE TABLE IF NOT EXISTS `SisInf`.`feature` (
   `f_id` SMALLINT UNSIGNED NOT NULL,
   `p_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(45) NOT NULL,
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `si_p2`.`feature` (
   INDEX `p_id_idx` (`p_id` ASC),
   CONSTRAINT `Has`
     FOREIGN KEY (`p_id`)
-    REFERENCES `si_p2`.`product` (`p_id`)
+    REFERENCES `SisInf`.`product` (`p_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
