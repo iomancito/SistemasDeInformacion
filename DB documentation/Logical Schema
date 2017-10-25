@@ -1,0 +1,74 @@
+USER(u_id:id_dom)
+	Primary Key: {u_id}
+
+GUEST(user_id:id_dom)
+	Primary Key: {u_id}
+	Foreign Key: {u_id} references USER
+
+REGISTERED_USER(u_id:id_dom, login:login_dom, email:email_dom, password:password_dom,
+ date_of_birth:dob_dom, name:name_dom, surname:surname_dom, privacy_settings:privacy_dom)
+	Primary Key: {u_id}
+	Foreign Key: {u_id} references USER
+	NNV: {login}
+	NNV: {email}
+	Unique value: {email} //ask sierra for correct term
+	NNV: {password}
+	NNV: {date_of_birth}
+	NNV: {name}
+	NNV: {surname}
+
+//Total
+USERx: USER, GUESTx: GUEST, REGISTERED_USERx: REGISTERED_USER
+FOR EVERY x(USER(USERx) -> (EXISTS GUESTx(GUEST(GUESTx) AND GUESTx.u_id = USERx.u_id) OR
+ EXISTS REGISTERED_USERx(REGISTERED_USER(REGISTERED_USERx) AND REGISTERED_USERx.u_id = USERx.u_id)))
+
+//Disjoint
+GUESTx: GUEST, REGISTERED_USERx: REGISTERED_USER
+¬EXISTS (EXISTS GUESTx EXISTS REGISTERED_USERx (GUEST(GUESTx) AND REGISTERED_USER(REGISTERED_USERx) AND
+ (GUESTx.u_id = REGISTERED_USERx.u_)))
+
+USER_ACTIVITY(ua_id:id_dom, date:date_dom, description:description_dom)
+	PRIMARY KEY: {u_id, ua_id}
+	FOREIGN KEY: {u_id} references REGISTERED_USER
+	NNV: {date}
+	NNV: {description}
+
+PRODUCT(p_id:id_dom, name:name_dom, description:description_dom, price:price_dom,
+ picture:picture_dom)
+	Primary Key {p_id}
+	NNV: {name}
+	NNV: {price}
+
+PRODUCT_ACTIVITY(pa_id:id_dom date:date_dom)
+	Primary Key: {p_id, pa_id}
+	Foreign Key: {p_id} references PRODUCT
+	Foreign Key: {u_id} references USER
+
+RATING(pa_id:id_dom, rating:rating_dom, comment:comment_dom)
+	Primary Key: {pa_id}
+	Foreign Key: {pa_id} references PRODUCT_ACTIVITY
+	NNV: {rating}
+
+//Rating range
+RATINGx: RATING
+¬EXISTS RATINGx(RATING(RATINGx) AND (RATINGx.rating < 1 OR RATINGx.rating > 5 ) )
+
+PURCHASE(pa_id:id_dom)
+	Primary Key: {pa_id}
+	Foreign Key: {pa_id} references PRODUCT_ACTIVITY
+
+//Total
+PRODUCT_ACTIVITYx: PRODUCT_ACTIVITY, RATINGx: RATING, PURCHASEx: PURCHASE
+FOR EVERY PRODUCT_ACTIVITYx(PRODUCT_ACTIVITY(PRODUCT_ACTIVITYx) -> (EXISTS RATINGx(RATING(RATINGx)
+ AND RATINGx.pa_id = PRODUCT_ACTIVITYx.pa_id)
+ OR EXISTS PURCHASEx(PURCHASE(PURCHASEx) AND PURCHASEx.pa_id = USERx.pa_id)))
+
+//Disjoint
+RATINGx: RATING, PURCHASEx: PURCHASE
+¬EXISTS (EXISTS RATINGx EXISTS PURCHASEx (RATING(RATINGx) AND PURCHASE(PURCHASEx) AND
+(RATINGx.pa_id = PURCHASEx.pa_id)))
+
+FEATURE(f_id:id_dom, name:name_dom, description:description_dom, picture:picture_dom)
+	PRIMARY KEY: {p_id, f_id}
+	FOREIGN KEY: {p_id} references PRODUCT
+	NNV: {name}
