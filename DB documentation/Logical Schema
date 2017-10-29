@@ -6,12 +6,13 @@ GUEST(user_id:id_dom)
 	Foreign Key: {u_id} references USER
 
 REGISTERED_USER(u_id:id_dom, login:login_dom, email:email_dom, password:password_dom,
- date_of_birth:dob_dom, name:name_dom, surname:surname_dom, privacy_settings:privacy_dom)
+ date_of_birth:dob_dom, name:name_dom, surname:surname_dom, privacy_settings:privacy_dom,
+ deleted:deleted_dom)
 	Primary Key: {u_id}
 	Foreign Key: {u_id} references USER
 	NNV: {login}
 	NNV: {email}
-	Unique value: {email} //ask sierra for correct term
+	Unique NNV: {email} //ask sierra for correct term
 	NNV: {password}
 	NNV: {date_of_birth}
 	NNV: {name}
@@ -28,7 +29,7 @@ GUESTx: GUEST, REGISTERED_USERx: REGISTERED_USER
  (GUESTx.u_id = REGISTERED_USERx.u_)))
 
 USER_ACTIVITY(ua_id:id_dom, date:date_dom, description:description_dom)
-	PRIMARY KEY: {u_id, ua_id}
+	PRIMARY KEY: {ua_id}
 	FOREIGN KEY: {u_id} references REGISTERED_USER
 	NNV: {date}
 	NNV: {description}
@@ -69,6 +70,6 @@ RATINGx: RATING, PURCHASEx: PURCHASE
 (RATINGx.pa_id = PURCHASEx.pa_id)))
 
 FEATURE(f_id:id_dom, name:name_dom, description:description_dom, picture:picture_dom)
-	PRIMARY KEY: {p_id, f_id}
+	PRIMARY KEY: {f_id}
 	FOREIGN KEY: {p_id} references PRODUCT
 	NNV: {name}
