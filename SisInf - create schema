@@ -17,7 +17,7 @@ USE `SisInf` ;
 -- Table `SisInf`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`user` (
-  `u_id` INT UNSIGNED NOT NULL,
+  `u_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`u_id`))
 ENGINE = InnoDB;
 
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `SisInf`.`registered_user` (
   `dob` DATE NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `surname` VARCHAR(255) NOT NULL,
+  `deleted` BOOLEAN DEFAULT 0,
   PRIMARY KEY (`u_id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
   CONSTRAINT `user-registered_user`
@@ -47,11 +48,11 @@ ENGINE = InnoDB;
 -- Table `SisInf`.`user_activity`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`user_activity` (
-  `ua_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `u_id` INT UNSIGNED NOT NULL,
   `date` DATETIME NOT NULL DEFAULT NOW(),
   `description` TEXT NOT NULL,
-  PRIMARY KEY (`ua_id`, `u_id`),
+  PRIMARY KEY (`ua_id`),
   INDEX `u_id_idx` (`u_id` ASC),
   CONSTRAINT `logs`
     FOREIGN KEY (`u_id`)
@@ -65,7 +66,7 @@ ENGINE = InnoDB;
 -- Table `SisInf`.`product`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`product` (
-  `p_id` INT UNSIGNED NOT NULL,
+  `p_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
   `price` FLOAT(9,2) NOT NULL,
@@ -78,7 +79,7 @@ ENGINE = InnoDB;
 -- Table `SisInf`.`product_activity`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`product_activity` (
-  `pa_id` INT UNSIGNED NOT NULL,
+  `pa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `p_id` INT UNSIGNED NOT NULL,
   `u_id` INT UNSIGNED NOT NULL,
   `date` DATETIME NOT NULL DEFAULT NOW(),
@@ -143,12 +144,12 @@ ENGINE = InnoDB;
 -- Table `SisInf`.`feature`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SisInf`.`feature` (
-  `f_id` SMALLINT UNSIGNED NOT NULL,
+  `f_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `p_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
   `picture` VARCHAR(2000) NULL,
-  PRIMARY KEY (`f_id`, `p_id`),
+  PRIMARY KEY (`f_id`),
   INDEX `p_id_idx` (`p_id` ASC),
   CONSTRAINT `Has`
     FOREIGN KEY (`p_id`)
