@@ -14,20 +14,16 @@ if($enlace){
 			WHERE email = '$email' and password = '$pass'";
 			//echo $sql;
 	$resultado = mysql_query($sql);
+	
 	if(!$resultado){
-		echo "No se pudo realizar la consulta";
+		echo "No se pudo realizar la consulta";   //error al realizar la consulta
 	}
-	if(mysql_num_rows($resultado) == 0){
-		echo "no coincidencias";
-		$error = true;
+	
+	if(mysql_num_rows($resultado) == 0){ 
+		$error = true;    //No esxisten coincidencias
 	}else{
 		$fila = mysql_fetch_assoc($resultado);
 		$user = new user($fila['name'], $fila['login'], $fila['email'], $fila['surname'], $fila['dob']);
-		/*echo $user->getNombre();
-		echo $user->getLogin();
-		echo $user->getEmail();
-		echo $user->getSurname();
-		echo $user->getDob();*/
 		$_SESSION['user'] = serialize($user);
 	}
 
