@@ -53,7 +53,7 @@ $user = unserialize($user);
 	<img src="img/logo2.jpg" class="img-fluid" alt="Bienvenido a electronix">
 	<div class="container">
 		<?php
-			if($_GET['error'])echo "<h3>No existen coincidencias. Intentelo de nuevo.</h3>";
+			if($_GET['error'])echo "<h3 class='text-danger'>No existen coincidencias. Intentelo de nuevo.</h3>";
 			if($_GET['signup']=='ok') echo "<h3>Se ha registrado correctamente</h3>";
 		if(!$sessionActiva){?>
 		<h2 class="form-signin-heading">Introduzca su información de usuario</h2>
