@@ -21,6 +21,7 @@ class dbhandler{
 			printf("Falló la conexión: %s\n", $mysqli->connect_error);
 			exit();
 		}
+		$this->mysqli->set_charset("utf8")
 	}
     
     
