@@ -1,7 +1,6 @@
 <?php
 session_start();
-include 'dbData.php';
-include 'user.php';
+require_once 'class/dbhandler.php';
 if(isset($_SESSION['user'])) {
 	$sessionActiva = true;
 }else {
@@ -10,38 +9,30 @@ if(isset($_SESSION['user'])) {
 $user = $_SESSION['user'];
 $user = unserialize($user);
 
-$enlace = mysql_connect($dburl,  $dbuser, $dbpass);
-if($enlace){
-	$apellidos = $_POST['apellidos'];
-	$nombre = $_POST['nombre'];
-	$str = strtotime($_POST['birth']);
-	$birth = date("Y-m-d",$str);
-	$email = $_POST['email'];
-	$password = md5($_POST['password']);
+$mysqli = new dbhandler();
 
-	mysql_select_db($dbname);
-	$mail = $user->getEmail();
-	$sql = "SELECT u_id FROM registered_user WHERE email='$mail'";
-	
-	$resultado = mysql_query($sql);
-	$fila = mysql_fetch_assoc($resultado);	
-	$id = $fila['u_id'];
+$apellidos = $_POST['apellidos'];
+$nombre = $_POST['nombre'];
+//$str = strtotime($_POST['birth']);
+//$birth = date("Y-m-d",$str);
+$birth = $_POST['birth'];
+$email = $_POST['email'];
+$password = $_POST['password'];
 
-	$sql = "UPDATE registered_user 
-			SET email='$email', password='$password', dob='$birth', name='$nombre', surname='$apellidos'
-			WHERE u_id='$id'";
-	mysql_query($sql);
+$result = $mysqli->modifyUser($nombre, $apellidos, $email, $birth, $password, $user->getEmail());
 
+if($result){
 	$user = new user($nombre, $user->getLogin(), $email, $apellidos, $birth);
 	$_SESSION['user'] = serialize($user);
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 	<head> 
 		<?php
-		if  (!$enlace) {
+		if  (!$result) {
 			echo '<meta http-equiv="refresh" content="0; URL=error.php" />';
 		} else{
 			echo '<meta http-equiv="refresh" content="0; URL=perfil.php" />';

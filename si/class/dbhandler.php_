@@ -34,26 +34,25 @@ class dbhandler{
 	public function login($email, $pass){
 		//esacapamos el email para evitar SQL inyection
 		$email = $this->mysqli->real_escape_string($email);
-		//generamos hash para el password (tb evita SQL inyection)
-		$pass = $this->mysqli->real_escape_string($pass);
-		
+		//generamos hash md5 para el password (tb evita SQL inyection)
+		$pass = md5($pass);
+
 		$sql = "SELECT *
 		FROM registered_user
-		WHERE email = '$email'";
+		WHERE email = '$email' and password = '$pass'";
 
 		//realizamos la consulta
 		$result = $this->mysqli->query($sql);
 
 		//solo debería haber un único acierto, dado que los emails son únicos
-		
-		if ($result->num_rows == 1){
-			$fila = $result->fetch_assoc();
-			if(password_verify($pass, $fila['password'])){
-				$user = new user($fila['name'], $fila['login'], $fila['email'], $fila['surname'], $fila['dob']);
-				return $user;
-			}
+		if ($result->num_rows != 1){
+			return FALSE;
 		}
-		return FALSE;
+		else {
+			$fila = $result->fetch_assoc();
+			$user = new user($fila['name'], $fila['login'], $fila['email'], $fila['surname'], $fila['dob']);
+			return $user;
+		}
 	}
     
     
@@ -100,39 +99,6 @@ class dbhandler{
 		}
 	}
 	
-	
-	/**
-	 * Modificar usuario existent
-	 * 
-	 * @param	$apellidos	apellidos a modificar
-	 * @param	$nombre		nombre a modificar
-	 * @param	$fecha		fecha de naciomiento a modificar
-	 * @param	$email		email a modificar
-	 * @param	$pass		password a modificar
-	 * @return				TRUE si efectua la modificación con éxito, FALSE en caso contrario
-	 */
-	 
-	public function modifyUser($nombre, $apellidos, $email, $dob, $pass, $email2){
-		//escapamos todo el formulario para evitar SQL inyection
-		$email = $this->mysqli->real_escape_string($email);
-		$nombre = $this->mysqli->real_escape_string($nombre);
-		$apellidos = $this->mysqli->real_escape_string($apellidos);
-		$dob = $this->mysqli->real_escape_string($dob);
-		//generamos hash para el password (tb evita SQL inyection)
-		$password = password_hash($pass, PASSWORD_DEFAULT);
-		
-		$sql = "UPDATE registered_user
-				SET name = '$nombre', surname = '$apellidos', email = '$email', dob = '$dob', password = '$password'
-				WHERE email = '$email2'";
-		echo $sql;
-		if ($this->mysqli->query($sql)) {
-			return TRUE;
-		}
-		else {
-			return FALSE;
-		}
-			
-	}
 	
 	/**
 	 * Calcula el número de páginas
@@ -188,19 +154,10 @@ class dbhandler{
 	  * Detalle de un artículo
 	  * 
 	  * @param	$p_id	identificador único del producto
-	  * @return			objeto product
+	  * @return			objeto productDetails
 	  * 
 	  */
-	public function productDetail($id){
-		$sql = "SELECT *
-				FROM product
-				WHERE p_id = '$id'";
-			
-		$result = $this->mysqli->query($sql);
-		if ($result->num_rows == 1){
-			$fila = $result->fetch_assoc();
-			$product = new product($fila['p_id'], $fila['name'], $fila['description'], $fila['price'], $fila['picture']);
-			return $product;
-		}else return FALSE;
-	}
+	  public function productDetail($id){
+		  echo "No implementada, no hay tabla todavia";
+	  }
 }?>

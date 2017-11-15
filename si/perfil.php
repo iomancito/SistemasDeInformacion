@@ -1,7 +1,6 @@
 <?php
 session_start();
-include 'dbData.php';
-include 'user.php';
+require_once'class/dbhandler.php';
 if(isset($_SESSION['user'])) {
 	$sessionActiva = true;
 }else {
@@ -47,9 +46,7 @@ $user = unserialize($user);
 		
 		<h1 class="text-muted p-2"><a class="nav-link" href="index.php">Electronix</a></h1>
 		</div>
-		<?php
 		
-		?>
       <div class="container">
 		<div class="jumbotron">
 			<div class="container text-center">

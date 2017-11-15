@@ -93,7 +93,7 @@ $user = unserialize($user);
 					<div class="form-group row">
 						<label for="birth" class="col-sm-2 col-form-label">Fecha de nacimiento</label>
 						<div class="col-sm-10">
-							<input type="text" name="birth" class="form-control" id="birth" placeholder="aaaa/mm/dd" required>
+							<input type="date" name="birth" class="form-control" id="birth" placeholder="dd/mm/aaaa" data-validation="date" data-validation-format="dd/mm/yyyy" required>
 						</div>
 					</div>
 					
@@ -151,4 +151,13 @@ $user = unserialize($user);
 	password.onchange = validatePassword;
 	confirm_password.onkeyup = validatePassword;
 	</script>
+	<!--
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script>
+	  $.validate({
+		lang: 'es'
+	  });
+	</script>
+	-->
 </html>
