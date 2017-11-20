@@ -1,0 +1,70 @@
+Usuario de la máquina virtual:
+usuario : usuarioSI		(incluido en sudoers)
+password : claveSI16_17
+
+La base de datos viene ya creada:
+nombre BD : sistInfBD
+usuario : usuarioSIBD
+password : claveSIBD
+
+creación de las tablas :
+1- Iniciar mysql : mysql -u sistInfBD -D SistInfBD -p
+2- ejecutar script : source \path\script.sql
+3- para salir : \q
+
+o bien
+
+1- mysql -u usuarioSIBD -p claveSIBD sistInfBD < script.sql
+
+instalación de apache2:
+1- sudo apt-get -y install apache2 (se puede omitir la opción -y)
+
+instalación de php 7:
+1- sudo apt-get -y install php7.0 libapache2-mod-php7.0 (se puede omitir la opción -y)
+2- sudo systemctl restart apache2  (reiniciar apache)
+3- crear un fichero /var/www/html/info.php con el siguiente contenido:
+
+<?php
+phpinfo();
+?>
+
+test: desde un navegador, al acceder a localhost/info.php, nos mostrara la información de la configuración de php.
+
+Instalación del módulo mysql para php7.0
+1- sudo apt-get -y install php7.0-mysql
+2- sudo systemctl restart apache2  (reiniciar apache)
+
+test: Ahora en el navegador, al ver el info.php, debe aparecer el módulo mysqli
+
+Instalación de Opcache + APCu PHP cache (incrementa el rendimiento de php)
+1- sudo apt-get -y install php7.0-opcache php-apcu  (Opcache probablemente ya esté instalado)
+2- sudo systemctl restart apache2  (reiniciar apache)
+
+test :Ahora en el navegador, al ver el info.php, debe aparecer el módulo OPcache y apcu
+
+Habilitar servicio web SSL en apache
+
+1- sudo a2enmod ssl
+2- sudo a2ensite default-ssl
+3- sudo systemctl restart apache
+
+test: acceder desde navegador a https://localhost/info.php. El navegador debería avisarnos de que no confía en el certificado, al ser un certificado autofirmado, "self-signed".
+
+
+Creación de certificado SSL con Let's Encrypt
+Durante este proceso, Let's Encrypt intentara conectar con el dominio que aportemos, de forma, que este debe existir y que sea apuntado por un DNS, de forma que el sitio web sea accesible apuntado por un dominio en el puerto 80.
+
+1- sudo apt-get -y install python-letsencrypt-apache
+2.1- sudo nano /etc/apache2/sites-available/000-default.conf
+2.2- añadir la linea ServerName ejemplo.com (donde ejemplo.com es el nombre de nuestro dominio)
+3- sudo letsencrypt --apache -d ejemplo.com
+4- seleccionar 'Make all request redirect to secure HTTPS acces', además de las ventajas que supone el https, evitará posibles problemas de contenido duplicado.
+
+test: los accesos http deben ser redirigidos a https y en la barra del navegador, aparecerá un candado verde indicando que la conexión es segura.
+
+Autorenovación del servicio de Let's Encrypt
+5- sudo crontab -e (abrimos el editor del cron)
+6- Añadir la siguiente linea al cron, y guardar
+	0  1  *  *  *  /usr/bin/letsencrypt renew &> /dev/null
+
+
