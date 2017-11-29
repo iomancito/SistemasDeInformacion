@@ -2,7 +2,6 @@
 require_once("user.php");
 require_once("product.php");
 require_once("feature.php");
-require_once("rating.php");
 class dbhandler{
     
     private $dburl = "localhost";
@@ -304,15 +303,16 @@ class dbhandler{
 	 * Listado de artículos
 	 * 
 	 * @param	$pagina		Número de página a mostrar
-	 * @param	$numXpag	Número de comentarios por página a mostar
-	 * @param	$pid		Identificardor del producto
+	 * @param	$numXpag	Número de artículos por página a mostar
 	 * @return				un SplObjectStorage con todos los objetos 'product' de la consulta
 	 */
-	public function listadoComentarios($pid){
+	public function listadoRating($pagina, $numXpag, $pid){
 		$pagina = ($pagina-1)*$numXpag;
-		$sql = "SELECT r.*, pa.*, ru.login
-				FROM rating r, product_activity pa, registered_user ru
-				WHERE pa.p_id = '$pid' and pa.pa_id=r.pa_id and ru.u_id = pa.u_id";
+		$sql = "SELECT *
+				FROM rating
+				WHERE pa_id = '$pid'
+				ORDER BY pa_id
+				LIMIT $pagina, $numXpag";
 
 		$result = $this->mysqli->query($sql);
 		
@@ -322,7 +322,7 @@ class dbhandler{
 		//para cada producto resultado de la consulta
 		while($fila = $result->fetch_assoc()){
 			//creamos un objeto tipo producto con sus datos
-			$rating = new rating($fila['login'], $fila['rating'], $fila['comment'],$fila['date']);
+			$rating = new product($fila['pa_id'], $fila['rating'], $fila['comment']);
 			//y lo almacenamos en el SplObjectStorage
 			$spl->attach($rating);
 		}
@@ -340,28 +340,10 @@ class dbhandler{
 	  * 
 	  */
 	public function setActivity($u_id, $descp){
+		//$date = date(Y/m/d);
 		$sql = "INSERT INTO user_activity (u_id, description)
 				VALUES ('$u_id', '$descp')";
 		if($this->mysqli->query($sql)) return true;
 		else return false;
 	 }
-	 
-	 /*
-	  * Comentar un producto
-	  * 
-	  * @param	$coment	Texto del comentario
-	  * @param	$rate	Puntuadión del producto
-	  * @param	$uid	id del usuario
-	  * @param	$pid	id del producto
-	  * @return			TRUE si realiza la consulta con exito FALSE en caso contrario
-	  * 
-	  */
-	public function newRate($comment, $rating, $uid, $pid){
-		$sql = "INSERT INTO product_activity (p_id, u_id)
-				VALUES ('$pid', '$uid')";
-		$sql2= "INSERT INTO rating (pa_id, rating, comment)
-				VALUES (LAST_INSERT_ID(), '$rating', '$comment')";
-		if($this->mysqli->query($sql) && $this->mysqli->query($sql2)) return TRUE;
-		else return FALSE;
-	}
 }?>

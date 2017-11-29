@@ -1,15 +1,12 @@
 <?php
 session_start();
-include 'dbData.php';
-include 'user.php';
-if(isset($_SESSION['user'])) {
-	$sessionActiva = true;
-}else {
-	$sessionActiva = false;
-}
-$user = $_SESSION['user'];
-$user = unserialize($user);
+require_once 'class/dbhandler.php';
+
+$mysqli = new dbhandler();
+//comprueba si está activa una sesión
+include 'checkSession.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 	<head>
@@ -47,9 +44,7 @@ $user = unserialize($user);
 		
 		<h1 class="text-muted p-2"><a class="nav-link" href="index.php">Electronix</a></h1>
 		</div>
-		<?php
 		
-		?>
       <div class="container">
 		<div class="jumbotron">
 			<div class="container text-center">

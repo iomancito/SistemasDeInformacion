@@ -1,15 +1,14 @@
 <?php
 session_start();
-include 'dbData.php';
-include 'user.php';
-if(isset($_SESSION['user'])) {
-	$sessionActiva = true;
-}else {
-	$sessionActiva = false;
-}
-$user = $_SESSION['user'];
-$user = unserialize($user);
+require_once 'class/dbhandler.php';
+//print_r($_SESSION);
+//print_r($_COOKIE);
+//echo $user;
+$mysqli = new dbhandler();
+//comprueba si está activa una sesión
+include 'checkSession.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 	<head>
@@ -57,6 +56,7 @@ $user = unserialize($user);
 			if($_GET['signup']=='ok') echo "<h3>Se ha registrado correctamente</h3>";
 		if(!$sessionActiva){?>
 		<h2 class="form-signin-heading">Introduzca su información de usuario</h2>
+
 		<form class="form-signin" method="POST" action="procesa_login.php">
 			<div class="row justify-content-md-center">
 				<div class="col col-lg-5">
@@ -72,10 +72,10 @@ $user = unserialize($user);
 			</div>
 			<div class="checkbox">
 				<label>
-				<input type="checkbox" value="remember-me"> Recordar mis datos
+				<input type="checkbox" name="remember" value="remember"> Recordar mis datos
 				</label>
 			</div>
-			<input class="btn btn-lg btn-primary" type="submit">
+			<input class="btn btn-lg btn-primary" type="submit" name="submit" value="Enviar">
 		</form>
 		<?php
 		}else{
@@ -83,11 +83,5 @@ $user = unserialize($user);
 		}
 		?>
 	</div>
-
-	
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-
 </body>
 </html>
